@@ -13,12 +13,18 @@ namespace GC_Capstone2_PigLatin
         static void Main(string[] args)
         {
             PrintWelcomeMessage();
+
+            do
+            {
+
+            } while (CheckUserWantsToContinue());
+
             ExitApp();
         }
 
         //TODO:
         // X  Welcome the user
-        // O  Get user input
+        // X  Get user input
         // O  Validate the user input
         // O  Transform the input 
         // X  Ask user to repeat
@@ -39,6 +45,32 @@ namespace GC_Capstone2_PigLatin
                 Console.WriteLine(Environment.NewLine);
                 PrintWelcomeMessage();
             }
+        }
+
+        public static string GetUserInput()
+        {
+            Console.Write("Enter a sentence to be translated: ");
+            string userInput = Console.ReadLine();
+
+            Console.WriteLine(Environment.NewLine);
+            return userInput;
+        }
+
+        public static string TranslateToPigLatin(string sentence)
+        {
+            sentence = sentence.ToLower();
+
+            //if vowel
+            //add "way"
+
+            //else
+            //move all consonants before first vowel to end
+            //add "ay"
+
+            
+
+
+            return " ";
         }
 
         public static bool CheckUserWantsToContinue()
