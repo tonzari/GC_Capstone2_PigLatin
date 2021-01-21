@@ -1,0 +1,13 @@
+C:\Users\dude_dude\source\repos\GC_Capstone2_PigLatin\GC_Capstone2_PigLatin\bin\Debug\netcoreapp3.1\GC_Capstone2_PigLatin.exe
+C:\Users\dude_dude\source\repos\GC_Capstone2_PigLatin\GC_Capstone2_PigLatin\bin\Debug\netcoreapp3.1\GC_Capstone2_PigLatin.deps.json
+C:\Users\dude_dude\source\repos\GC_Capstone2_PigLatin\GC_Capstone2_PigLatin\bin\Debug\netcoreapp3.1\GC_Capstone2_PigLatin.runtimeconfig.json
+C:\Users\dude_dude\source\repos\GC_Capstone2_PigLatin\GC_Capstone2_PigLatin\bin\Debug\netcoreapp3.1\GC_Capstone2_PigLatin.runtimeconfig.dev.json
+C:\Users\dude_dude\source\repos\GC_Capstone2_PigLatin\GC_Capstone2_PigLatin\bin\Debug\netcoreapp3.1\GC_Capstone2_PigLatin.dll
+C:\Users\dude_dude\source\repos\GC_Capstone2_PigLatin\GC_Capstone2_PigLatin\bin\Debug\netcoreapp3.1\GC_Capstone2_PigLatin.pdb
+C:\Users\dude_dude\source\repos\GC_Capstone2_PigLatin\GC_Capstone2_PigLatin\obj\Debug\netcoreapp3.1\GC_Capstone2_PigLatin.csprojAssemblyReference.cache
+C:\Users\dude_dude\source\repos\GC_Capstone2_PigLatin\GC_Capstone2_PigLatin\obj\Debug\netcoreapp3.1\GC_Capstone2_PigLatin.AssemblyInfoInputs.cache
+C:\Users\dude_dude\source\repos\GC_Capstone2_PigLatin\GC_Capstone2_PigLatin\obj\Debug\netcoreapp3.1\GC_Capstone2_PigLatin.AssemblyInfo.cs
+C:\Users\dude_dude\source\repos\GC_Capstone2_PigLatin\GC_Capstone2_PigLatin\obj\Debug\netcoreapp3.1\GC_Capstone2_PigLatin.csproj.CoreCompileInputs.cache
+C:\Users\dude_dude\source\repos\GC_Capstone2_PigLatin\GC_Capstone2_PigLatin\obj\Debug\netcoreapp3.1\GC_Capstone2_PigLatin.dll
+C:\Users\dude_dude\source\repos\GC_Capstone2_PigLatin\GC_Capstone2_PigLatin\obj\Debug\netcoreapp3.1\GC_Capstone2_PigLatin.pdb
+C:\Users\dude_dude\source\repos\GC_Capstone2_PigLatin\GC_Capstone2_PigLatin\obj\Debug\netcoreapp3.1\GC_Capstone2_PigLatin.genruntimeconfig.cache
