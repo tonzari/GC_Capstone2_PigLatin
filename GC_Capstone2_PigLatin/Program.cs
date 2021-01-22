@@ -18,13 +18,6 @@ namespace GC_Capstone2_PigLatin
 
         static void Main(string[] args)
         {
-            Console.WriteLine(CheckIfContainsNumberOrSymbol("antonio"));
-            Console.WriteLine(CheckIfContainsNumberOrSymbol("@"));
-            Console.WriteLine(CheckIfContainsNumberOrSymbol("+"));
-            Console.WriteLine(CheckIfContainsNumberOrSymbol("anto'nio"));
-            Console.WriteLine(CheckIfContainsNumberOrSymbol("antonio87"));
-
-
             PrintWelcomeMessage();
 
             do
@@ -85,37 +78,21 @@ namespace GC_Capstone2_PigLatin
                 for (int i = 0; i < words.Length; i++)
                 {
 
-                    // TODO if contains number, leave it alone
                     if (CheckIfContainsNumberOrSymbol(words[i]))
                     {
-
-                    }
-
-                    //check the case, save that info
-                    if (CheckIsAllLower(words[i]))
-                    {
-                        savedCaseData.Add(i, CaseType.Lower);
-                    }
-                    else if (CheckIsAllUpper(words[i]))
-                    {
-                        savedCaseData.Add(i, CaseType.Upper);
-                    }
-                    else if (CheckIsTitleCase(words[i]))
-                    {
-                        savedCaseData.Add(i, CaseType.Title);
+                        // leave the word alone
+                        //Console.WriteLine(words[i] + ": no translation");
+                        savedCaseData.Add(i, GetLetterCaseType(words[i]));
                     }
                     else
                     {
-                        savedCaseData.Add(i, CaseType.Mixed);
-                        // save the mixed case type somehow??
-                        // maybe just forget the mixed case words and convert the whole word to lower
+                        // process/translate the word
+                        //Console.WriteLine(words[i] + ": translation needed");
+
+                        //check the case, save that info
+                        savedCaseData.Add(i, GetLetterCaseType(words[i]));
                     }
-
-                    //Console.WriteLine(savedCaseData.ElementAt(i).Key + ", " + savedCaseData.ElementAt(i).Value);
-                    
-                    
-                    // TODO leave words with ' alone (possible taken care of with above feature)
-
+                    Console.WriteLine(savedCaseData.ElementAt(i).Key + ": " + savedCaseData.ElementAt(i).Value);
                 }
 
             }
@@ -165,6 +142,21 @@ namespace GC_Capstone2_PigLatin
 
             input = input.Substring(1);
             return CheckIsAllLower(input);
+        }
+
+        public static CaseType GetLetterCaseType(string input)
+        {
+            if (CheckIsAllLower(input))
+                return CaseType.Lower;
+
+            else if (CheckIsAllUpper(input))
+                return CaseType.Upper;
+
+            else if (CheckIsTitleCase(input))
+                return CaseType.Title;
+
+            else
+                return CaseType.Mixed;
         }
 
         public static string ConvertToTitleCase(string input)
@@ -218,7 +210,7 @@ namespace GC_Capstone2_PigLatin
             {
 
                 Console.WriteLine(Environment.NewLine);
-                Console.WriteLine($"Goodbye, {userName}!");
+                Console.WriteLine($"I guess this is goodbye, {userName}.");
                 return false;
             }
             else
@@ -230,7 +222,7 @@ namespace GC_Capstone2_PigLatin
         }
         public static void ExitApp()
         {
-            Console.WriteLine("I guess this is goodbye...");
+            Console.WriteLine("Exiting application...");
             Environment.Exit(0);
         }
     }
