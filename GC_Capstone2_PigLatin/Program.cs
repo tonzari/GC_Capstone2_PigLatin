@@ -73,12 +73,32 @@ namespace GC_Capstone2_PigLatin
             {
                 String[] words = sentence.Split();
 
-                Dictionary<int, CaseType> savedCaseData = new Dictionary<int, CaseType>();
+                Dictionary<int, CaseType> savedCaseData = new Dictionary<int, CaseType>(); // for saving case per word of sentence. extended exerice: keep the case of the word: uppercase, lowercase, title case
 
                 for (int i = 0; i < words.Length; i++)
                 {
                     //check the case, save that info
+                    if (CheckIsAllLower(words[i]))
+                    {
+                        savedCaseData.Add(i, CaseType.Lower);
+                    }
+                    else if (CheckIsAllUpper(words[i]))
+                    {
+                        savedCaseData.Add(i, CaseType.Upper);
+                    }
+                    else if (CheckIsTitleCase(words[i]))
+                    {
+                        savedCaseData.Add(i, CaseType.Title);
+                    }
+                    else
+                    {
+                        // save the mixed case type somehow??
+                        savedCaseData.Add(i, CaseType.Mixed);
+                    }
 
+                    Console.WriteLine(savedCaseData.ElementAt(i).Key + ", " + savedCaseData.ElementAt(i).Value);
+                    
+                    
                     // if contains number, leave it alone
                     //remove ' from contractions
 
@@ -122,7 +142,16 @@ namespace GC_Capstone2_PigLatin
             return true;
         }
 
-        
+        public static bool CheckIsTitleCase(string input)
+        {
+            if (!char.IsUpper(input.First()))
+            {
+                return false;
+            }
+
+            input = input.Substring(1);
+            return CheckIsAllLower(input);
+        }
 
         public static string ConvertToTitleCase(string input)
         {
