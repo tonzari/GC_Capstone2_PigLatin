@@ -18,6 +18,13 @@ namespace GC_Capstone2_PigLatin
 
         static void Main(string[] args)
         {
+            Console.WriteLine(CheckIfContainsNumberOrSymbol("antonio"));
+            Console.WriteLine(CheckIfContainsNumberOrSymbol("@"));
+            Console.WriteLine(CheckIfContainsNumberOrSymbol("+"));
+            Console.WriteLine(CheckIfContainsNumberOrSymbol("anto'nio"));
+            Console.WriteLine(CheckIfContainsNumberOrSymbol("antonio87"));
+
+
             PrintWelcomeMessage();
 
             do
@@ -32,7 +39,7 @@ namespace GC_Capstone2_PigLatin
         // X  Welcome the user
         // X  Get user input
         // O  Validate the user input
-        // O  Transform the input 
+        // O  Translate the input 
         // X  Ask user to repeat
 
         public static void PrintWelcomeMessage()
@@ -77,6 +84,13 @@ namespace GC_Capstone2_PigLatin
 
                 for (int i = 0; i < words.Length; i++)
                 {
+
+                    // TODO if contains number, leave it alone
+                    if (CheckIfContainsNumberOrSymbol(words[i]))
+                    {
+
+                    }
+
                     //check the case, save that info
                     if (CheckIsAllLower(words[i]))
                     {
@@ -92,15 +106,15 @@ namespace GC_Capstone2_PigLatin
                     }
                     else
                     {
-                        // save the mixed case type somehow??
                         savedCaseData.Add(i, CaseType.Mixed);
+                        // save the mixed case type somehow??
+                        // maybe just forget the mixed case words and convert the whole word to lower
                     }
 
-                    Console.WriteLine(savedCaseData.ElementAt(i).Key + ", " + savedCaseData.ElementAt(i).Value);
+                    //Console.WriteLine(savedCaseData.ElementAt(i).Key + ", " + savedCaseData.ElementAt(i).Value);
                     
                     
-                    // if contains number, leave it alone
-                    //remove ' from contractions
+                    // TODO leave words with ' alone (possible taken care of with above feature)
 
                 }
 
@@ -156,6 +170,38 @@ namespace GC_Capstone2_PigLatin
         public static string ConvertToTitleCase(string input)
         {
             return textInfo.ToTitleCase(input);
+        }
+
+        public static bool CheckIfContainsVowel(string input)
+        {
+            string vowels = "aAeEiIoOuU";
+
+            foreach (char vowel in vowels)
+            {
+                if (input.Contains(vowel))
+                {
+                    return true;
+                }
+                else if (input.Contains('y') || input.Contains('Y'))
+                {
+                    return true;
+                }
+            }
+           
+            return false;
+        }
+
+        public static bool CheckIfContainsNumberOrSymbol(string input)
+        {
+            foreach (char character in input)
+            {
+                if (Char.IsNumber(character) || Char.IsSymbol(character) || Char.IsPunctuation(character))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public static bool CheckUserWantsToContinue()
