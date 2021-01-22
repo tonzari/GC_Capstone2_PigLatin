@@ -15,6 +15,7 @@ namespace GC_Capstone2_PigLatin
         public static string userName = String.Empty;
         public static CultureInfo cultureInfo = Thread.CurrentThread.CurrentCulture;
         public static TextInfo textInfo = cultureInfo.TextInfo;
+        public static string vowels = "aAeEiIoOuU";
 
         static void Main(string[] args)
         {
@@ -73,28 +74,44 @@ namespace GC_Capstone2_PigLatin
             {
                 String[] words = sentence.Split();
 
-                Dictionary<int, CaseType> savedCaseData = new Dictionary<int, CaseType>(); // for saving case per word of sentence. extended exerice: keep the case of the word: uppercase, lowercase, title case
+                CaseType[] savedCaseData = new CaseType[words.Length]; // for saving case per word of sentence. extended exerice: keep the case of the word: uppercase, lowercase, title case
 
                 for (int i = 0; i < words.Length; i++)
                 {
+                    // Store the case type for each word in an array for later
+                    savedCaseData[i] = GetLetterCaseType(words[i]);
+
+                    // Change all words to lower case before translation 
+                    words[i] = words[i].ToLower();
 
                     if (CheckIfContainsNumberOrSymbol(words[i]))
                     {
-                        // leave the word alone
+                        // do not translate or process word
                         //Console.WriteLine(words[i] + ": no translation");
-                        savedCaseData.Add(i, GetLetterCaseType(words[i]));
+                        savedCaseData[i] = GetLetterCaseType(words[i]);
                     }
                     else
                     {
                         // process/translate the word
                         //Console.WriteLine(words[i] + ": translation needed");
 
-                        //check the case, save that info
-                        savedCaseData.Add(i, GetLetterCaseType(words[i]));
-                    }
-                    Console.WriteLine(savedCaseData.ElementAt(i).Key + ": " + savedCaseData.ElementAt(i).Value);
-                }
+                        int firstVowelIndex = FindindexOfFirstVowel(words[i], vowels);
 
+                        if (firstVowelIndex == 0)
+                        {
+                            // TRANSLATE - add "way" to words that start with vowel
+                            Console.WriteLine(words[i] + " translates to: " + words[i] + "way");
+                        }
+                        else
+                        {
+                            // split the string at location of first vowel, move first substring to end, add "ay"
+                            string firstHalf = words[i].Substring(0, firstVowelIndex);
+                            string secondHalf = words[i].Substring(firstVowelIndex);
+
+                            Console.WriteLine(firstHalf + " + " + secondHalf);
+                        }
+                    }
+                }
             }
 
             // check if just one word, if so tell the user they can do a full sentence.
@@ -164,11 +181,9 @@ namespace GC_Capstone2_PigLatin
             return textInfo.ToTitleCase(input);
         }
 
-        public static bool CheckIfContainsVowel(string input)
+        public static bool CheckIfContainsVowel(string input, string vowelList)
         {
-            string vowels = "aAeEiIoOuU";
-
-            foreach (char vowel in vowels)
+            foreach (char vowel in vowelList)
             {
                 if (input.Contains(vowel))
                 {
@@ -181,6 +196,13 @@ namespace GC_Capstone2_PigLatin
             }
            
             return false;
+        }
+
+        public static int FindindexOfFirstVowel(string input, string vowelList)
+        {
+            char[] chars = vowelList.ToCharArray();
+
+            return input.IndexOfAny(chars);
         }
 
         public static bool CheckIfContainsNumberOrSymbol(string input)
