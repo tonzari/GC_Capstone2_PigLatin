@@ -12,7 +12,6 @@ namespace GC_Capstone2_PigLatin
 {
     partial class Program
     {
-        public static string userName = String.Empty;
         public static CultureInfo cultureInfo = Thread.CurrentThread.CurrentCulture;
         public static TextInfo textInfo = cultureInfo.TextInfo;
         
@@ -22,9 +21,10 @@ namespace GC_Capstone2_PigLatin
 
             do
             {
-                List<string> wordListRaw = GetUserInput().Split().ToList();         // Get user input, split it, and store in a List
-                List<string> wordListSanitized = new List<string>();                // Loop through raw list, and only add actualy words to sanitized list
-                
+                string userInput = GetUserInput();
+                List<string> wordListRaw = userInput.Split().ToList();                     // Get user input, split it, and store in a List
+                List<string> wordListSanitized = new List<string>();                                // Loop through raw list, and only add actualy words to sanitized list
+
                 foreach (var word in wordListRaw)
                 {
                     if (!String.IsNullOrWhiteSpace(word))
@@ -33,12 +33,35 @@ namespace GC_Capstone2_PigLatin
                     }
                 }
 
-                CaseType[] savedCaseData = new CaseType[wordListSanitized.Count];   // Store the case type for each word in an array for later
+                CaseType[] savedCaseData = new CaseType[wordListSanitized.Count];                   // Store the case type for each word in an array for later
                 for (int i = 0; i < wordListSanitized.Count; i++)
                 {
                     savedCaseData[i] = GetLetterCaseType(wordListSanitized[i]);
-                    Console.WriteLine($"CASE for {wordListSanitized[i]}: {savedCaseData[i]}");
                 }
+
+                List<string> wordListTranslated = new List<string>();                               // New List to store translated words
+                for (int i = 0; i < wordListSanitized.Count; i++)
+                {
+                    wordListSanitized[i].ToLower();
+                    
+                    wordListTranslated.Insert(i, TranslateWordToPigLatin(wordListSanitized[i]));
+/*
+                    if (savedCaseData[i] == CaseType.Lower || savedCaseData[i] == CaseType.Mixed)   // Currently not handling mixed case words like "O'Bryan or McDougal" Needs to have a different approach
+                    {                     
+                        wordListTranslated[i].ToLower();
+                    }
+                    else if (savedCaseData[i] == CaseType.Upper)
+                    {
+                        wordListTranslated[i].ToUpper();
+                    }
+                    else if (savedCaseData[i] == CaseType.Title)
+                    {
+                        wordListTranslated[i] = ConvertToTitleCase(wordListTranslated[i]);
+                    }*/
+
+                    Console.WriteLine(i + wordListTranslated[i]);
+                }
+
 
 
 
@@ -57,19 +80,7 @@ namespace GC_Capstone2_PigLatin
         public static void PrintWelcomeMessage()
         {
             Console.WriteLine("Welcome to the PIG LATIN TRANSLATOR!");
-            Console.Write("Before we ge started, can you please enter your name? ");
-            userName = Console.ReadLine();
             Console.WriteLine(Environment.NewLine);
-            if (!String.IsNullOrWhiteSpace(userName))
-            {
-                Console.WriteLine($"Thanks, {userName}!");
-            }
-            else
-            {
-                Console.WriteLine("I'm sorry, but you have to enter *something* for your name... let's start over.");
-                Console.WriteLine(Environment.NewLine);
-                PrintWelcomeMessage();
-            }
         }
 
         public static string GetUserInput()
@@ -77,8 +88,17 @@ namespace GC_Capstone2_PigLatin
             Console.Write("Enter a sentence to be translated: ");
             string userInput = Console.ReadLine();
 
+            if (!String.IsNullOrWhiteSpace(userInput))
+            {
+                return userInput;
+            }
+            else
+            {
+                Console.WriteLine("Trying to break things again, are you? You have to enter *something* to translate! Let's try that again.");
+                return GetUserInput();
+            }
+
             Console.WriteLine(Environment.NewLine);
-            return userInput;
         }
 
         public static string TranslateWordToPigLatin(string input)
@@ -96,9 +116,7 @@ namespace GC_Capstone2_PigLatin
                 // split the string at location of first vowel, move first substring to end, add "ay"
                 string firstHalf = input.Substring(0, firstVowelIndex);
                 string secondHalf = input.Substring(firstVowelIndex);
-
                 translation = secondHalf + firstHalf + "ay";
-                Console.WriteLine(translation);
             }
 
             return translation;
@@ -110,21 +128,7 @@ namespace GC_Capstone2_PigLatin
             // handling the sentence should happen elsewhere in the program.
 
 
-            if (String.IsNullOrWhiteSpace(sentence))
-            {
-                Console.WriteLine($"Oh, {userName}. Trying to break things again, are you? You have to enter *something* to translate! Let's try that again.");
-            }
-            else
-            {
-                sentence = sentence.Trim();
-                String[] words = sentence.Split();
 
-
-                // Reconstruct the sentence
-
-                Console.WriteLine(String.Join(" ", words));
-
-            }
         }
 
         public static bool CheckIsAllUpper(string input)
@@ -201,11 +205,24 @@ namespace GC_Capstone2_PigLatin
 
         public static int FindindexOfFirstVowel(string input)
         {
-
             string vowels = "aAeEiIoOuU";
+            string yAsVowel = "yY";
             char[] chars = vowels.ToCharArray();
+            char[] yChars = yAsVowel.ToCharArray();
 
-            return input.IndexOfAny(chars);
+            if (input.IndexOfAny(chars) != -1) // First look for vowels
+            {
+                return input.IndexOfAny(chars);
+            }
+            else if (input.IndexOfAny(yChars) != -1) // Otherwise look for Y
+            {
+                return input.IndexOfAny(yChars);
+            }
+            else // Last resort, word is likely gibberish, return 0 to avoid return -1 and error
+            {
+                return 0;
+            }
+            
         }
 
         public static bool CheckIfContainsNumberOrSymbol(string input)
@@ -223,7 +240,7 @@ namespace GC_Capstone2_PigLatin
 
         public static bool CheckUserWantsToContinue()
         {
-            Console.WriteLine($"{userName}, would you like to continue? (y/n) ");
+            Console.WriteLine("Would you like to continue? (y/n) ");
             char userInput = Char.ToLower(Console.ReadKey().KeyChar);
 
             if (userInput.Equals('y'))
@@ -235,13 +252,13 @@ namespace GC_Capstone2_PigLatin
             {
 
                 Console.WriteLine(Environment.NewLine);
-                Console.WriteLine($"I guess this is goodbye, {userName}.");
+                Console.WriteLine($"I guess this is goodbye...");
                 return false;
             }
             else
             {
                 Console.WriteLine(Environment.NewLine);
-                Console.WriteLine($"So, here's the deal, {userName}. You can press the 'y' key, or you can press the 'n' key. What's it gonna be?");
+                Console.WriteLine($"So, here's the deal: You can press the 'y' key, or you can press the 'n' key. What's it gonna be?");
                 return CheckUserWantsToContinue();
             }
         }
