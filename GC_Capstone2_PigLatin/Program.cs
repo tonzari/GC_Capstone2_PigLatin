@@ -15,7 +15,6 @@ namespace GC_Capstone2_PigLatin
         public static CultureInfo cultureInfo = Thread.CurrentThread.CurrentCulture;
         public static TextInfo textInfo = cultureInfo.TextInfo;
         
-        public static string userInput;
         public static string translatedSentence;
        
         public static List<string> wordListRaw = new List<string>();
@@ -30,67 +29,87 @@ namespace GC_Capstone2_PigLatin
 
             do
             {
-                userInput = GetUserInput();
-                wordListRaw = userInput.Split().ToList();                                      // Get user input, split it, and store in a List
-                wordListSanitized = new List<string>();                                        // Loop through raw list, and only add actualy words to sanitized list
-
-                foreach (var word in wordListRaw)
-                {
-                    if (!String.IsNullOrWhiteSpace(word))
-                    {
-                        wordListSanitized.Add(word);
-                    }
-                }
-
-                savedCaseData = new CaseType[wordListSanitized.Count];                           // Store the case type for each word in an array for later
-                for (int i = 0; i < wordListSanitized.Count; i++)
-                {
-                    savedCaseData[i] = GetLetterCaseType(wordListSanitized[i]);
-                }
-
-                for (int i = 0; i < wordListSanitized.Count; i++)
-                {
-                    //wordListSanitized[i].ToLower();                                                       // I'm not sure I need to do this if I want to maintain the case for the extended exercise
-
-                    if (CheckIfContainsNumberOrSymbol(wordListSanitized[i]))
-                    {
-                        wordListTranslated.Insert(i, wordListSanitized[i]);
-                    }
-                    else
-                    {
-                        wordListTranslated.Insert(i, TranslateWordToPigLatin(wordListSanitized[i]));
-                    }
-
-                    if (savedCaseData[i] == CaseType.Lower)
-                    {
-                        wordListTranslated[i] = wordListTranslated[i].ToLower();
-                    }
-                    else if (savedCaseData[i] == CaseType.Upper && wordListTranslated[i] != "Iway")         // "I" is common enough that if it is returned as case type UPPER, it looks weird in a translate setnence as IWAY
-                    {
-                        wordListTranslated[i] = wordListTranslated[i].ToUpper();
-                    }
-                    else if (savedCaseData[i] == CaseType.Title)
-                    {
-                        wordListTranslated[i] = ConvertToTitleCase(wordListTranslated[i]);
-                    }
-                }
-
-                translatedSentence = String.Join(" ", wordListTranslated);
-                Console.WriteLine(translatedSentence);
-
-                //Clear lists
-                wordListTranslated.TrimExcess();
-                wordListTranslated.Clear();
-
-                wordListSanitized.TrimExcess();
-                wordListSanitized.Clear();
-
-                wordListRaw.TrimExcess();
-                wordListRaw.Clear();
+                UpdateLoop();
 
             } while (CheckUserWantsToContinue());
 
             ExitApp();
+        }
+
+        private static void UpdateLoop()
+        {
+            GetAndTrimUserInput();
+            StoreCaseOfEachWord();
+            TranslateAndPrintResults();
+            ClearAllLists();
+        }
+
+        private static void ClearAllLists()
+        {
+            wordListTranslated.TrimExcess();
+            wordListTranslated.Clear();
+
+            wordListSanitized.TrimExcess();
+            wordListSanitized.Clear();
+
+            wordListRaw.TrimExcess();
+            wordListRaw.Clear();
+        }
+
+        private static void TranslateAndPrintResults()
+        {
+            for (int i = 0; i < wordListSanitized.Count; i++)
+            {
+                //wordListSanitized[i].ToLower();                                                       // I'm not sure I need to do this if I want to maintain the case for the extended exercise
+
+                if (CheckIfContainsNumberOrSymbol(wordListSanitized[i]))
+                {
+                    wordListTranslated.Insert(i, wordListSanitized[i]);
+                }
+                else
+                {
+                    wordListTranslated.Insert(i, TranslateWordToPigLatin(wordListSanitized[i]));
+                }
+
+                if (savedCaseData[i] == CaseType.Lower)
+                {
+                    wordListTranslated[i] = wordListTranslated[i].ToLower();
+                }
+                else if (savedCaseData[i] == CaseType.Upper && wordListTranslated[i] != "Iway")         // "I" is common enough that if it is returned as case type UPPER, it looks weird in a translate setnence as IWAY
+                {
+                    wordListTranslated[i] = wordListTranslated[i].ToUpper();
+                }
+                else if (savedCaseData[i] == CaseType.Title)
+                {
+                    wordListTranslated[i] = ConvertToTitleCase(wordListTranslated[i]);
+                }
+            }
+
+            translatedSentence = String.Join(" ", wordListTranslated);
+            Console.WriteLine(translatedSentence);
+        }
+
+        private static void StoreCaseOfEachWord()
+        {
+            savedCaseData = new CaseType[wordListSanitized.Count];                           // Store the case type for each word in an array for later
+            for (int i = 0; i < wordListSanitized.Count; i++)
+            {
+                savedCaseData[i] = GetLetterCaseType(wordListSanitized[i]);
+            }
+        }
+
+        private static void GetAndTrimUserInput()
+        {
+            wordListRaw = PromptUserForSentence().Split().ToList();                                      // Get user input, split it, and store in a List
+            wordListSanitized = new List<string>();                                        // Loop through raw list, and only add actualy words to sanitized list
+
+            foreach (var word in wordListRaw)
+            {
+                if (!String.IsNullOrWhiteSpace(word))
+                {
+                    wordListSanitized.Add(word);
+                }
+            }
         }
 
         public static void PrintWelcomeMessage()
@@ -99,7 +118,7 @@ namespace GC_Capstone2_PigLatin
             Console.WriteLine(Environment.NewLine);
         }
 
-        public static string GetUserInput()
+        public static string PromptUserForSentence()
         {
             Console.Write("Enter a sentence to be translated: ");
             string userInput = Console.ReadLine();
@@ -112,7 +131,7 @@ namespace GC_Capstone2_PigLatin
             else
             {
                 Console.WriteLine("Trying to break things again, are you? You have to enter *something* to translate! Let's try that again.");
-                return GetUserInput();
+                return PromptUserForSentence();
             }
         }
 
