@@ -15,15 +15,24 @@ namespace GC_Capstone2_PigLatin
         public static CultureInfo cultureInfo = Thread.CurrentThread.CurrentCulture;
         public static TextInfo textInfo = cultureInfo.TextInfo;
         
+        public static string userInput;
+        public static string translatedSentence;
+       
+        public static List<string> wordListRaw = new List<string>();
+        public static List<string> wordListSanitized = new List<string>();
+        public static List<string> wordListTranslated = new List<string>();
+        
+        public static CaseType[] savedCaseData;
+
         static void Main(string[] args)
         {
             PrintWelcomeMessage();
 
             do
             {
-                string userInput = GetUserInput();
-                List<string> wordListRaw = userInput.Split().ToList();                              // Get user input, split it, and store in a List
-                List<string> wordListSanitized = new List<string>();                                // Loop through raw list, and only add actualy words to sanitized list
+                userInput = GetUserInput();
+                wordListRaw = userInput.Split().ToList();                                      // Get user input, split it, and store in a List
+                wordListSanitized = new List<string>();                                        // Loop through raw list, and only add actualy words to sanitized list
 
                 foreach (var word in wordListRaw)
                 {
@@ -33,16 +42,15 @@ namespace GC_Capstone2_PigLatin
                     }
                 }
 
-                CaseType[] savedCaseData = new CaseType[wordListSanitized.Count];                   // Store the case type for each word in an array for later
+                savedCaseData = new CaseType[wordListSanitized.Count];                           // Store the case type for each word in an array for later
                 for (int i = 0; i < wordListSanitized.Count; i++)
                 {
                     savedCaseData[i] = GetLetterCaseType(wordListSanitized[i]);
                 }
 
-                List<string> wordListTranslated = new List<string>();                               // New List to store translated words
                 for (int i = 0; i < wordListSanitized.Count; i++)
                 {
-                    //wordListSanitized[i].ToLower();                                               // I'm not sure I need to do this if I want to maintain the case for the extended exercise
+                    //wordListSanitized[i].ToLower();                                                       // I'm not sure I need to do this if I want to maintain the case for the extended exercise
 
                     if (CheckIfContainsNumberOrSymbol(wordListSanitized[i]))
                     {
@@ -57,7 +65,7 @@ namespace GC_Capstone2_PigLatin
                     {
                         wordListTranslated[i] = wordListTranslated[i].ToLower();
                     }
-                    else if (savedCaseData[i] == CaseType.Upper && wordListTranslated[i] != "Iway") // "I" is common enough that if it is returned as case type UPPER, it looks weird in a translate setnence as IWAY
+                    else if (savedCaseData[i] == CaseType.Upper && wordListTranslated[i] != "Iway")         // "I" is common enough that if it is returned as case type UPPER, it looks weird in a translate setnence as IWAY
                     {
                         wordListTranslated[i] = wordListTranslated[i].ToUpper();
                     }
@@ -67,8 +75,18 @@ namespace GC_Capstone2_PigLatin
                     }
                 }
 
-                string translatedSentence = String.Join(" ", wordListTranslated);
+                translatedSentence = String.Join(" ", wordListTranslated);
                 Console.WriteLine(translatedSentence);
+
+                //Clear lists
+                wordListTranslated.TrimExcess();
+                wordListTranslated.Clear();
+
+                wordListSanitized.TrimExcess();
+                wordListSanitized.Clear();
+
+                wordListRaw.TrimExcess();
+                wordListRaw.Clear();
 
             } while (CheckUserWantsToContinue());
 
