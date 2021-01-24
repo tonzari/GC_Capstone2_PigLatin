@@ -42,22 +42,33 @@ namespace GC_Capstone2_PigLatin
                 List<string> wordListTranslated = new List<string>();                               // New List to store translated words
                 for (int i = 0; i < wordListSanitized.Count; i++)
                 {
-                    wordListSanitized[i].ToLower();
-                    
-                    wordListTranslated.Insert(i, TranslateWordToPigLatin(wordListSanitized[i]));
-/*
-                    if (savedCaseData[i] == CaseType.Lower || savedCaseData[i] == CaseType.Mixed)   // Currently not handling mixed case words like "O'Bryan or McDougal" Needs to have a different approach
-                    {                     
-                        wordListTranslated[i].ToLower();
+                    //wordListSanitized[i].ToLower();                                               // I'm not sure I need to do this if I want to maintain the case for the extended exercise
+
+                    if (CheckIfContainsNumberOrSymbol(wordListSanitized[i]))
+                    {
+                        wordListTranslated.Insert(i, wordListSanitized[i]);
+                    }
+                    else
+                    {
+                        wordListTranslated.Insert(i, TranslateWordToPigLatin(wordListSanitized[i]));
+                    }
+
+                    if (savedCaseData[i] == CaseType.Lower)
+                    {
+                        wordListTranslated[i] = wordListTranslated[i].ToLower();
                     }
                     else if (savedCaseData[i] == CaseType.Upper)
                     {
-                        wordListTranslated[i].ToUpper();
+                        wordListTranslated[i] = wordListTranslated[i].ToUpper();
                     }
                     else if (savedCaseData[i] == CaseType.Title)
                     {
                         wordListTranslated[i] = ConvertToTitleCase(wordListTranslated[i]);
-                    }*/
+                    }
+                    else if (savedCaseData[i] == CaseType.Mixed)
+                    {
+                        // do nothing for now                      
+                    }
 
                     Console.WriteLine(i + wordListTranslated[i]);
                 }
@@ -229,13 +240,18 @@ namespace GC_Capstone2_PigLatin
         {
             foreach (char character in input)
             {
-                if (Char.IsNumber(character) || Char.IsSymbol(character) || Char.IsPunctuation(character))
+                if (Char.IsNumber(character) || Char.IsSymbol(character) || Char.IsPunctuation(character) && !character.Equals('\''))
                 {
                     return true;
                 }
             }
 
             return false;
+        }
+
+        public static bool CheckForTrailingPunctuation(string input)
+        {
+            return char.IsPunctuation(input.Last());
         }
 
         public static bool CheckUserWantsToContinue()
