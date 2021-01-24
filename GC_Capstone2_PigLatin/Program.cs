@@ -30,7 +30,6 @@ namespace GC_Capstone2_PigLatin
             do
             {
                 UpdateLoop();
-
             } while (CheckUserWantsToContinue());
 
             ExitApp();
@@ -44,18 +43,43 @@ namespace GC_Capstone2_PigLatin
             ClearAllLists();
         }
 
-        private static void ClearAllLists()
+        public static void PrintWelcomeMessage()
         {
-            wordListTranslated.TrimExcess();
-            wordListTranslated.Clear();
-
-            wordListSanitized.TrimExcess();
-            wordListSanitized.Clear();
-
-            wordListRaw.TrimExcess();
-            wordListRaw.Clear();
+            Console.WriteLine("Welcome to the PIG LATIN TRANSLATOR!");
+            Console.WriteLine(Environment.NewLine);
         }
 
+        public static string PromptUserForSentence()
+        {
+            Console.Write("Enter a sentence to be translated: ");
+            string userInput = Console.ReadLine();
+            Console.WriteLine(Environment.NewLine);
+
+            if (!String.IsNullOrWhiteSpace(userInput))
+            {
+                return userInput;
+            }
+            else
+            {
+                Console.WriteLine("Trying to break things again, are you? You have to enter *something* to translate! Let's try that again.");
+                return PromptUserForSentence();
+            }
+        }
+
+        private static void GetAndTrimUserInput()
+        {
+            wordListRaw = PromptUserForSentence().Split().ToList();                        // Get user input, split it, and store in a List
+            wordListSanitized = new List<string>();                                        // Loop through raw list, and only add actualy words to sanitized list
+
+            foreach (var word in wordListRaw)
+            {
+                if (!String.IsNullOrWhiteSpace(word))
+                {
+                    wordListSanitized.Add(word);
+                }
+            }
+        }
+        
         private static void TranslateAndPrintResults()
         {
             for (int i = 0; i < wordListSanitized.Count; i++)
@@ -95,43 +119,6 @@ namespace GC_Capstone2_PigLatin
             for (int i = 0; i < wordListSanitized.Count; i++)
             {
                 savedCaseData[i] = GetLetterCaseType(wordListSanitized[i]);
-            }
-        }
-
-        private static void GetAndTrimUserInput()
-        {
-            wordListRaw = PromptUserForSentence().Split().ToList();                                      // Get user input, split it, and store in a List
-            wordListSanitized = new List<string>();                                        // Loop through raw list, and only add actualy words to sanitized list
-
-            foreach (var word in wordListRaw)
-            {
-                if (!String.IsNullOrWhiteSpace(word))
-                {
-                    wordListSanitized.Add(word);
-                }
-            }
-        }
-
-        public static void PrintWelcomeMessage()
-        {
-            Console.WriteLine("Welcome to the PIG LATIN TRANSLATOR!");
-            Console.WriteLine(Environment.NewLine);
-        }
-
-        public static string PromptUserForSentence()
-        {
-            Console.Write("Enter a sentence to be translated: ");
-            string userInput = Console.ReadLine();
-            Console.WriteLine(Environment.NewLine);
-
-            if (!String.IsNullOrWhiteSpace(userInput))
-            {
-                return userInput;
-            }
-            else
-            {
-                Console.WriteLine("Trying to break things again, are you? You have to enter *something* to translate! Let's try that again.");
-                return PromptUserForSentence();
             }
         }
 
@@ -255,6 +242,18 @@ namespace GC_Capstone2_PigLatin
             return char.IsPunctuation(input.Last());
         }
 
+        private static void ClearAllLists()
+        {
+            wordListTranslated.TrimExcess();
+            wordListTranslated.Clear();
+
+            wordListSanitized.TrimExcess();
+            wordListSanitized.Clear();
+
+            wordListRaw.TrimExcess();
+            wordListRaw.Clear();
+        }
+
         public static bool CheckUserWantsToContinue()
         {
             Console.WriteLine(Environment.NewLine);
@@ -280,6 +279,7 @@ namespace GC_Capstone2_PigLatin
                 return CheckUserWantsToContinue();
             }
         }
+        
         public static void ExitApp()
         {
             Console.WriteLine("Exiting application...");
