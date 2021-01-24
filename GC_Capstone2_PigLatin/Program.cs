@@ -15,15 +15,40 @@ namespace GC_Capstone2_PigLatin
         public static string userName = String.Empty;
         public static CultureInfo cultureInfo = Thread.CurrentThread.CurrentCulture;
         public static TextInfo textInfo = cultureInfo.TextInfo;
-        public static string vowels = "aAeEiIoOuU";
-
+        
         static void Main(string[] args)
         {
             PrintWelcomeMessage();
 
             do
             {
-                TranslateToPigLatin(GetUserInput());
+                // Get the user word or sentence
+                string userSentenceRaw = GetUserInput();
+                
+                // Split the sentence and store in a List
+                List<string> wordListRaw = userSentenceRaw.Split().ToList();
+
+                // Loop through each List element and remove elements that only contain white space
+                foreach (var word in wordListRaw.Reverse<string>())
+                {
+                    if (String.IsNullOrWhiteSpace(word))
+                    {
+                        wordListRaw.Remove(word);
+                    }
+                }
+
+                // OR I could add to a new list
+                List<string> wordListSanitized = new List<string>();
+
+                foreach (var word in wordListRaw)
+                {
+                    if (!String.IsNullOrWhiteSpace(word))
+                    {
+                        wordListSanitized.Add(word);
+                    }
+                }
+
+
             } while (CheckUserWantsToContinue());
 
             ExitApp();
@@ -63,8 +88,34 @@ namespace GC_Capstone2_PigLatin
             return userInput;
         }
 
-        public static void TranslateToPigLatin(string sentence)
+        public static string TranslateWordToPigLatin(string input)
         {
+            string translation;
+            int firstVowelIndex = FindindexOfFirstVowel(input);
+            
+            if (firstVowelIndex == 0)
+            {
+                // TRANSLATE - add "way" to words that start with vowel
+                translation = input + "way";
+            }
+            else
+            {
+                // split the string at location of first vowel, move first substring to end, add "ay"
+                string firstHalf = input.Substring(0, firstVowelIndex);
+                string secondHalf = input.Substring(firstVowelIndex);
+
+                translation = secondHalf + firstHalf + "ay";
+                Console.WriteLine(translation);
+            }
+
+            return translation;
+        }
+
+        public static void TranslateSentenceToPigLatin(string sentence)
+        {
+            // I think I should use a method to translate ONE WORD at a time, this is too complicated.
+            // handling the sentence should happen elsewhere in the program.
+
 
             if (String.IsNullOrWhiteSpace(sentence))
             {
@@ -72,8 +123,8 @@ namespace GC_Capstone2_PigLatin
             }
             else
             {
+                sentence = sentence.Trim();
                 String[] words = sentence.Split();
-
                 CaseType[] savedCaseData = new CaseType[words.Length]; // for saving case per word of sentence. extended exerice: keep the case of the word: uppercase, lowercase, title case
 
                 for (int i = 0; i < words.Length; i++)
@@ -84,46 +135,18 @@ namespace GC_Capstone2_PigLatin
                     // Change all words to lower case before translation 
                     words[i] = words[i].ToLower();
 
-                    if (CheckIfContainsNumberOrSymbol(words[i]))
+                    if (!CheckIfContainsNumberOrSymbol(words[i]))
                     {
-                        // do not translate or process word
-                        //Console.WriteLine(words[i] + ": no translation");
-                        savedCaseData[i] = GetLetterCaseType(words[i]);
-                    }
-                    else
-                    {
-                        // process/translate the word
-                        //Console.WriteLine(words[i] + ": translation needed");
 
-                        int firstVowelIndex = FindindexOfFirstVowel(words[i], vowels);
 
-                        if (firstVowelIndex == 0)
-                        {
-                            // TRANSLATE - add "way" to words that start with vowel
-                            Console.WriteLine(words[i] + " translates to: " + words[i] + "way");
-                        }
-                        else
-                        {
-                            // split the string at location of first vowel, move first substring to end, add "ay"
-                            string firstHalf = words[i].Substring(0, firstVowelIndex);
-                            string secondHalf = words[i].Substring(firstVowelIndex);
-
-                            Console.WriteLine(firstHalf + " + " + secondHalf);
-                        }
                     }
                 }
+
+                // Reconstruct the sentence
+
+                Console.WriteLine(String.Join(" ", words));
+
             }
-
-            // check if just one word, if so tell the user they can do a full sentence.
-
-            //if vowel
-            //add "way"
-
-            //else
-            //move all consonants before first vowel to end
-            //add "ay"
-
-
         }
 
         public static bool CheckIsAllUpper(string input)
@@ -198,9 +221,11 @@ namespace GC_Capstone2_PigLatin
             return false;
         }
 
-        public static int FindindexOfFirstVowel(string input, string vowelList)
+        public static int FindindexOfFirstVowel(string input)
         {
-            char[] chars = vowelList.ToCharArray();
+
+            string vowels = "aAeEiIoOuU";
+            char[] chars = vowels.ToCharArray();
 
             return input.IndexOfAny(chars);
         }
