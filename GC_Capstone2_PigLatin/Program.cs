@@ -22,14 +22,9 @@ namespace GC_Capstone2_PigLatin
 
             do
             {
-                // Get the user word or sentence
-                string userSentenceRaw = GetUserInput();
+                List<string> wordListRaw = GetUserInput().Split().ToList();         // Get user input, split it, and store in a List
+                List<string> wordListSanitized = new List<string>();                // Loop through raw list, and only add actualy words to sanitized list
                 
-                // Split the sentence and store in a List
-                List<string> wordListRaw = userSentenceRaw.Split().ToList();
-
-                // Loop through raw list, and only add actualy words to sanitized list
-                List<string> wordListSanitized = new List<string>();
                 foreach (var word in wordListRaw)
                 {
                     if (!String.IsNullOrWhiteSpace(word))
@@ -38,8 +33,7 @@ namespace GC_Capstone2_PigLatin
                     }
                 }
 
-                // Store the case type for each word in an array for later
-                CaseType[] savedCaseData = new CaseType[wordListSanitized.Count]; // for saving case per word of sentence. extended exerice: keep the case of the word: uppercase, lowercase, title case
+                CaseType[] savedCaseData = new CaseType[wordListSanitized.Count];   // Store the case type for each word in an array for later
                 for (int i = 0; i < wordListSanitized.Count; i++)
                 {
                     savedCaseData[i] = GetLetterCaseType(wordListSanitized[i]);
