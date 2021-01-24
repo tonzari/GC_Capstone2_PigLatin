@@ -5,6 +5,6 @@ namespace GC_Capstone2_PigLatin
 {
     partial class Program
     {
-        public enum CaseType { Lower = 0 , Upper = 1, Title = 2, Mixed = 3};
+        public enum CaseType { Lower , Upper, Title, Mixed };
     }
 }
