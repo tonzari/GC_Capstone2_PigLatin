@@ -28,18 +28,8 @@ namespace GC_Capstone2_PigLatin
                 // Split the sentence and store in a List
                 List<string> wordListRaw = userSentenceRaw.Split().ToList();
 
-                // Loop through each List element and remove elements that only contain white space
-                foreach (var word in wordListRaw.Reverse<string>())
-                {
-                    if (String.IsNullOrWhiteSpace(word))
-                    {
-                        wordListRaw.Remove(word);
-                    }
-                }
-
-                // OR I could add to a new list
+                // Loop through raw list, and only add actualy words to sanitized list
                 List<string> wordListSanitized = new List<string>();
-
                 foreach (var word in wordListRaw)
                 {
                     if (!String.IsNullOrWhiteSpace(word))
@@ -47,6 +37,15 @@ namespace GC_Capstone2_PigLatin
                         wordListSanitized.Add(word);
                     }
                 }
+
+                // Store the case type for each word in an array for later
+                CaseType[] savedCaseData = new CaseType[wordListSanitized.Count]; // for saving case per word of sentence. extended exerice: keep the case of the word: uppercase, lowercase, title case
+                for (int i = 0; i < wordListSanitized.Count; i++)
+                {
+                    savedCaseData[i] = GetLetterCaseType(wordListSanitized[i]);
+                    Console.WriteLine($"CASE for {wordListSanitized[i]}: {savedCaseData[i]}");
+                }
+
 
 
             } while (CheckUserWantsToContinue());
@@ -125,22 +124,7 @@ namespace GC_Capstone2_PigLatin
             {
                 sentence = sentence.Trim();
                 String[] words = sentence.Split();
-                CaseType[] savedCaseData = new CaseType[words.Length]; // for saving case per word of sentence. extended exerice: keep the case of the word: uppercase, lowercase, title case
 
-                for (int i = 0; i < words.Length; i++)
-                {
-                    // Store the case type for each word in an array for later
-                    savedCaseData[i] = GetLetterCaseType(words[i]);
-
-                    // Change all words to lower case before translation 
-                    words[i] = words[i].ToLower();
-
-                    if (!CheckIfContainsNumberOrSymbol(words[i]))
-                    {
-
-
-                    }
-                }
 
                 // Reconstruct the sentence
 
