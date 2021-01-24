@@ -22,7 +22,7 @@ namespace GC_Capstone2_PigLatin
             do
             {
                 string userInput = GetUserInput();
-                List<string> wordListRaw = userInput.Split().ToList();                     // Get user input, split it, and store in a List
+                List<string> wordListRaw = userInput.Split().ToList();                              // Get user input, split it, and store in a List
                 List<string> wordListSanitized = new List<string>();                                // Loop through raw list, and only add actualy words to sanitized list
 
                 foreach (var word in wordListRaw)
@@ -57,7 +57,7 @@ namespace GC_Capstone2_PigLatin
                     {
                         wordListTranslated[i] = wordListTranslated[i].ToLower();
                     }
-                    else if (savedCaseData[i] == CaseType.Upper)
+                    else if (savedCaseData[i] == CaseType.Upper && wordListTranslated[i] != "Iway") // "I" is common enough that if it is returned as case type UPPER, it looks weird in a translate setnence as IWAY
                     {
                         wordListTranslated[i] = wordListTranslated[i].ToUpper();
                     }
@@ -65,28 +65,15 @@ namespace GC_Capstone2_PigLatin
                     {
                         wordListTranslated[i] = ConvertToTitleCase(wordListTranslated[i]);
                     }
-                    else if (savedCaseData[i] == CaseType.Mixed)
-                    {
-                        // do nothing for now                      
-                    }
-
-                    Console.WriteLine(i + wordListTranslated[i]);
                 }
 
-
-
+                string translatedSentence = String.Join(" ", wordListTranslated);
+                Console.WriteLine(translatedSentence);
 
             } while (CheckUserWantsToContinue());
 
             ExitApp();
         }
-
-        //TODO:
-        // X  Welcome the user
-        // X  Get user input
-        // O  Validate the user input
-        // O  Translate the input 
-        // X  Ask user to repeat
 
         public static void PrintWelcomeMessage()
         {
@@ -98,6 +85,7 @@ namespace GC_Capstone2_PigLatin
         {
             Console.Write("Enter a sentence to be translated: ");
             string userInput = Console.ReadLine();
+            Console.WriteLine(Environment.NewLine);
 
             if (!String.IsNullOrWhiteSpace(userInput))
             {
@@ -108,8 +96,6 @@ namespace GC_Capstone2_PigLatin
                 Console.WriteLine("Trying to break things again, are you? You have to enter *something* to translate! Let's try that again.");
                 return GetUserInput();
             }
-
-            Console.WriteLine(Environment.NewLine);
         }
 
         public static string TranslateWordToPigLatin(string input)
@@ -131,15 +117,6 @@ namespace GC_Capstone2_PigLatin
             }
 
             return translation;
-        }
-
-        public static void TranslateSentenceToPigLatin(string sentence)
-        {
-            // I think I should use a method to translate ONE WORD at a time, this is too complicated.
-            // handling the sentence should happen elsewhere in the program.
-
-
-
         }
 
         public static bool CheckIsAllUpper(string input)
@@ -197,23 +174,6 @@ namespace GC_Capstone2_PigLatin
             return textInfo.ToTitleCase(input);
         }
 
-        public static bool CheckIfContainsVowel(string input, string vowelList)
-        {
-            foreach (char vowel in vowelList)
-            {
-                if (input.Contains(vowel))
-                {
-                    return true;
-                }
-                else if (input.Contains('y') || input.Contains('Y'))
-                {
-                    return true;
-                }
-            }
-           
-            return false;
-        }
-
         public static int FindindexOfFirstVowel(string input)
         {
             string vowels = "aAeEiIoOuU";
@@ -233,14 +193,14 @@ namespace GC_Capstone2_PigLatin
             {
                 return 0;
             }
-            
         }
 
         public static bool CheckIfContainsNumberOrSymbol(string input)
         {
+            // Do not consider the single quote, cannot find info on ‘ ’ 
             foreach (char character in input)
             {
-                if (Char.IsNumber(character) || Char.IsSymbol(character) || Char.IsPunctuation(character) && !character.Equals('\''))
+                if (Char.IsNumber(character) || Char.IsSymbol(character) || Char.IsPunctuation(character) && !character.Equals('\'')) 
                 {
                     return true;
                 }
@@ -251,11 +211,16 @@ namespace GC_Capstone2_PigLatin
 
         public static bool CheckForTrailingPunctuation(string input)
         {
+            //This proved to be too dificult for the amount of time I have.
+            //I wanted to strip out trailin punctuation, but ran into 
+            //time constraint issues. I would ideally split off the punctuation,
+            //translate the word portion, then join them back together.
             return char.IsPunctuation(input.Last());
         }
 
         public static bool CheckUserWantsToContinue()
         {
+            Console.WriteLine(Environment.NewLine);
             Console.WriteLine("Would you like to continue? (y/n) ");
             char userInput = Char.ToLower(Console.ReadKey().KeyChar);
 
