@@ -9,6 +9,8 @@ using System.Threading;
 
 namespace GC_Capstone2_PigLatin
 {
+    //TODO
+    //Use split stringoptions to remove empty entries instead of juggling Lists
     partial class Program
     {
         public static CultureInfo cultureInfo = Thread.CurrentThread.CurrentCulture;
